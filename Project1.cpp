@@ -18,13 +18,10 @@ using namespace std;
  * 
  */
 int alg_1(vector<vector<int>> v){
-    int max = 1, ant_1, atual, i;
+    int max = 0, ant_1, atual, i;
     vector<int> h= v[0];
     int size = h.size();
-    printf("dei o size\n");
-
     if(size == 0){
-        printf("Mal feito\n");
         return 0;
     }
     else{
@@ -45,7 +42,7 @@ int alg_1(vector<vector<int>> v){
  * 
  */
 int main(){ 
-    int num, number, ind = 0, n=1;
+    int num, number, ind = 0;
     string line;
     stringstream ss;
     cin >> num;
@@ -57,10 +54,9 @@ int main(){
         ss << line;
         while(ss >> number){
             _sequences[0].push_back(number);
-            printf("%d ", n);
-            n++;
         }
-        alg_1(_sequences);
+        num = alg_1(_sequences);
+        cout << num;
     }
     if(num == 2){
         getline(cin, line);
