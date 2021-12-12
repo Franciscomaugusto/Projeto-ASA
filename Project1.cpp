@@ -11,6 +11,7 @@
 #include <vector>
 #include <cstring>
 #include <sstream>
+
 using namespace std;
 
 /**
@@ -18,7 +19,8 @@ using namespace std;
  * 
  */
 int alg_1(vector<vector<int>> v){
-    int max = 0, ant_1, atual, i;
+    int max_rela = 0, max_absol=0, ant_1, atual, i;
+    int ant_2, varia;
     vector<int> h= v[0];
     int size = h.size();
     if(size == 0){
@@ -26,23 +28,40 @@ int alg_1(vector<vector<int>> v){
     }
     else{
         ant_1 = v[0][0];
+        ant_2 = v[0][0];
         for(i= 1; i<= (size-1); i++){
             atual = v[0][i];
             if(atual > ant_1){
-                max++;
-                ant_1 = atual;
+                if(atual > ant_2){
+                    max_rela = max_absol;
+                }
+                max_rela++;
+                if(max_rela > max_absol){
+                    max_absol= max_rela;
+                    ant_2 = ant_1;
+                    varia = 0;
+                }
+                if(max_rela == max_absol){
+                    varia++;
+                }
             }
+            if(atual < ant_1){
+                max_rela = 1;
+                ant_2 = ant_1;
+            }             
+            ant_1 = atual;
         }
     }
-    return max;
+    return max_absol;
 }
+
 
 /**
  * 
  * 
  */
 int main(){ 
-    int num, number, ind = 0;
+    int num, number, ind = 0, res;
     string line;
     stringstream ss;
     cin >> num;
@@ -55,8 +74,8 @@ int main(){
         while(ss >> number){
             _sequences[0].push_back(number);
         }
-        num = alg_1(_sequences);
-        cout << num;
+        res = alg_1(_sequences);
+        cout << res;
     }
     if(num == 2){
         getline(cin, line);
