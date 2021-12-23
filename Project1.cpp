@@ -15,80 +15,117 @@
 using namespace std;
 
 /**
+ * @brief 
  * 
- * 
+ * @param s 
+ * @param v 
+ * @param ind 
+ * @return vector<vector<int>> 
  */
-int alg_1(vector<vector<int>> v){
-    int max_rela = 0, max_absol=0, ant_1, atual, i;
-    int ant_2, varia;
-    vector<int> h= v[0];
-    int size = h.size();
-    if(size == 0){
-        return 0;
-    }
-    else{
-        ant_1 = v[0][0];
-        ant_2 = v[0][0];
-        for(i= 1; i<= (size-1); i++){
-            atual = v[0][i];
-            if(atual > ant_1){
-                if(atual > ant_2){
-                    max_rela = max_absol;
-                }
-                max_rela++;
-                if(max_rela > max_absol){
-                    max_absol= max_rela;
-                    ant_2 = ant_1;
-                    varia = 0;
-                }
-                if(max_rela == max_absol){
-                    varia++;
-                }
-            }
-            if(atual < ant_1){
-                max_rela = 1;
-                ant_2 = ant_1;
-            }             
-            ant_1 = atual;
+//Added - meant to process input, creating a vector of ints as a result
+vector<vector<int>> find_vector(string s,vector<vector<int>> v, int ind){
+    string number = "";
+    int num;
+    int size = s.size();
+    for (int i=0; i<=size; i++){
+        if (s[i] <= '9' && s[i] >= '0'){
+            number = number + s[i];
         }
-    }
-    return max_absol;
+        if(s[i] == ' ' || s[i] == '\n' || s[i] == '\0'){
+            num = stoi(number);
+            v[ind].push_back(num);
+            number = "";
+        }
+    } 
+    return v;
 }
 
 
 /**
+ * @brief 
  * 
- * 
+ * @param v 
+ * @return int 
  */
+//Optimized
+void alg_1(vector<vector<int>> v){
+    int max_rela = 0, max_absol, varia;
+    vector<int> h= v[0];
+    int size = h.size();
+    vector<vector<int>> _matriz (size, vector<int>(3, 0));
+    if(size == 0){
+        printf("0 0");
+    }
+    else{
+        for(int i= 0; i< size; i++){
+            _matriz[i][0] = v[0][i];
+        }
+        for(int i= 0; i< size; i++){
+            max_rela = 0;
+            varia = 0;
+            for(int h = 0; h < i; h++){
+                if(_matriz[i][0] > _matriz[h][0]){
+                    if(_matriz[h][1] > max_rela){
+                        max_rela = _matriz[h][1];
+                        varia = 0;
+                    }
+                    if(_matriz[h][1] == max_rela){
+                        varia++;
+                    }
+                }
+            }
+            _matriz[i][1] = max_rela + 1;
+            _matriz[i][2] = varia;
+        }
+        max_absol = 0;
+        varia = 0;
+        for(int i = 0; i <size; i++){
+            if(_matriz[i][1] >= max_absol){
+                max_absol = _matriz[i][1];
+                if(_matriz[i][2] > varia){
+                    varia = _matriz[i][2];
+                }
+            }
+        }
+        printf("%d %d\n",max_absol, varia);
+    }
+}
+/**
+ * @brief 
+ * 
+ * @param v 
+ */
+void alg_2(vector<vector<int>> v){
+
+}
+
+
+/**
+ * @brief 
+ * 
+ * @return int 
+ */
+//Altered in order to use the first function, the name of which I can't remember
 int main(){ 
-    int num, number, ind = 0, res;
+    int num, ind = 0;
     string line;
+    vector<int> h;
     stringstream ss;
     cin >> num;
     cin.ignore();
     vector<vector<int>> _sequences;
-    _sequences.push_back(vector<int>(1));
-    if(num== 1){
+    _sequences.push_back(vector<int>(0));
+    if(num == 1){
         getline(cin, line);
-        ss << line;
-        while(ss >> number){
-            _sequences[0].push_back(number);
-        }
-        res = alg_1(_sequences);
-        cout << res;
+        _sequences = find_vector(line,_sequences, ind);
+        alg_1(_sequences);
     }
     if(num == 2){
         getline(cin, line);
-        ss << line;
-        while(ss >> number){
-            _sequences[ind].push_back(number);
-        }
+        _sequences = find_vector(line, _sequences, ind);
         ind++;
         getline(cin, line);
-        ss <<line;
-        while(ss >> number){
-            _sequences[ind].push_back(number);
-        }
+        _sequences = find_vector(line, _sequences, ind);
         //alg_2(_sequences);
     }
     return 0;
