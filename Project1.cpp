@@ -95,10 +95,43 @@ void alg_1(vector<vector<int>> v){
  * 
  * @param v 
  */
-void alg_2(vector<vector<int>> v){
+int alg_2(vector <int> v1, vector<int> v2){
+    int s1 = v1.size();
+    int s2 = v2.size();
+
+    int t[s2];
+    for (int i = 0; i<s2 ; i ++){
+        t[i] = 0;
+    }
+
+    for (int i = 0; i<s1 ; i ++){
+        int atual = 0;
+        for (int j = 0; j<s2 ; j ++){
+            if (v1[i] == v2[j]){
+                if (t[j] < atual + 1){
+                    t[j] = atual + 1 ;
+                }
+
+            }
+
+            if(v1[i] > v2[j]){
+                if (t[j] > atual){
+                    atual = t[j];
+                }
+            }
+        }
+    }
+
+    int res = 0;
+    for(int n = 0; n < s2; n++){
+        if (t[n] > res){
+            res = t[n];
+        }
+    }
+
+    return res;
 
 }
-
 
 /**
  * @brief 
