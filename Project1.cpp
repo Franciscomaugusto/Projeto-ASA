@@ -9,6 +9,17 @@
  */
 #include <iostream>
 #include <vector>
+/**
+ * 
+ * ASA 2021/2022 - IST
+ * Projeto 1
+ * 
+ * 99218 - Francisco Augusto
+ * 95908 - Rita Costa
+ * 
+ */
+#include <iostream>
+#include <vector>
 #include <cstring>
 #include <sstream>
 
@@ -22,10 +33,10 @@ using namespace std;
  * @param ind 
  * @return vector<vector<int>> 
  */
-//Added - meant to process input, creating a vector of ints as a result
-vector<vector<int>> find_vector(string s,vector<vector<int>> v, int ind){
+vector<int> find_vector(string s,vector<vector<int>> v){
     string number = "";
     int num;
+    vector<int> h;
     int size = s.size();
     for (int i=0; i<=size; i++){
         if (s[i] <= '9' && s[i] >= '0'){
@@ -33,11 +44,11 @@ vector<vector<int>> find_vector(string s,vector<vector<int>> v, int ind){
         }
         if(s[i] == ' ' || s[i] == '\n' || s[i] == '\0'){
             num = stoi(number);
-            v[ind].push_back(num);
+            h.push_back(num);
             number = "";
         }
     } 
-    return v;
+    return h;
 }
 
 
@@ -47,7 +58,6 @@ vector<vector<int>> find_vector(string s,vector<vector<int>> v, int ind){
  * @param v 
  * @return int 
  */
-//Optimized
 void alg_1(vector<vector<int>> v){
     int max_rela = 0, max_absol, varia;
     vector<int> h= v[0];
@@ -95,71 +105,70 @@ void alg_1(vector<vector<int>> v){
  * 
  * @param v 
  */
-int alg_2(vector <int> v1, vector<int> v2){
+void alg_2(vector <int> v1, vector<int> v2){
     int s1 = v1.size();
     int s2 = v2.size();
-
-    int t[s2];
-    for (int i = 0; i<s2 ; i ++){
-        t[i] = 0;
+    int maior = 0;
+    int t[s1][s2];
+    for(int i = 0; i <s1; i++){
+        if(v1[i] == v2[0]){
+                t[i][0] = 1;
+            }
+        else{
+            t[i][0] = t[i-1][0];
+        }
     }
-
-    for (int i = 0; i<s1 ; i ++){
-        int atual = 0;
-        for (int j = 0; j<s2 ; j ++){
-            if (v1[i] == v2[j]){
-                if (t[j] < atual + 1){
-                    t[j] = atual + 1 ;
-                }
-
+    for(int j = 0; j< s2; j++){
+        if(v1[0] == v2[j]){
+                t[0][j] = 1;
             }
-
-            if(v1[i] > v2[j]){
-                if (t[j] > atual){
-                    atual = t[j];
-                }
-            }
+        else{
+            t[0][j] = t[0][j-1];
         }
     }
 
-    int res = 0;
-    for(int n = 0; n < s2; n++){
-        if (t[n] > res){
-            res = t[n];
+    for (int i = 1; i<s1 ; i ++){
+        for (int j = 1; j<s2 ; j ++){
+            if (v1[i] == v2[j] && i != 0 && j != 0){
+                t[i][j] = t[i-1][j-1] + 1;
+                maior = t[i][j];
+            }
+            else{
+                    t[i][j] = max(t[i-1][j], t[i][j-1]);
+                }
         }
     }
 
-    return res;
+    printf("%d\n", maior);
 
 }
+
+
 
 /**
  * @brief 
  * 
  * @return int 
  */
-//Altered in order to use the first function, the name of which I can't remember
 int main(){ 
-    int num, ind = 0;
+    int num;
     string line;
-    vector<int> h;
-    stringstream ss;
     cin >> num;
     cin.ignore();
     vector<vector<int>> _sequences;
     _sequences.push_back(vector<int>(0));
     if(num == 1){
         getline(cin, line);
-        _sequences = find_vector(line,_sequences, ind);
+        _sequences[0] = find_vector(line,_sequences);
         alg_1(_sequences);
     }
     if(num == 2){
         getline(cin, line);
-        _sequences = find_vector(line, _sequences, ind);
-        ind++;
+        _sequences[0] = find_vector(line, _sequences);
         getline(cin, line);
-        _sequences = find_vector(line, _sequences, ind);
-        //alg_2(_sequences);
+        _sequences.push_back(vector<int>(0));
+        _sequences[1] = find_vector(line, _sequences);
+        alg_2(_sequences[0], _sequences[1]);
     }
     return 0;
 }
