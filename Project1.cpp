@@ -49,90 +49,127 @@ vector<int> find_vector(string s,vector<vector<int>> v){
  */
 vector<int> alg_1(vector<vector<int>> v){
     int max_rela = 0, max_absol, varia;
-    vector<int> h= v[0];
+    vector<int> k= v[0];
     vector<int> _results = vector<int> (2);
-    int size = h.size();
-    vector<vector<int>> _matriz (size, vector<int>(3, 0));
-    if(size == 0){
-        _results[0] = 0;
-        _results[1] = 0;
-    }
-    else{
-        for(int i= 0; i< size; i++){
+    int size = k.size();
+    vector<vector<int>> _matriz (size, vector<int>(2, 0));
+    for(int i= 0; i< size; i++){
             _matriz[i][0] = v[0][i];
-        }
-        for(int i= 0; i< size; i++){
-            max_rela = 0;
-            varia = 1;
-            for(int h = 0; h < i; h++){
-                if(_matriz[i][0] > _matriz[h][0]){
-                    if(_matriz[h][1] > max_rela){
-                        max_rela = _matriz[h][1];
-                        varia = 0;
-                    }
-                    if(_matriz[h][1] == max_rela){
-                        varia++;
-                    }
-                }
-                if(_matriz[i][0] == _matriz[h][0]){
+    }
+    for(int i= 0; i< size; i++){
+        max_rela = 0;
+        varia = 1;
+        for(int h = 0; h < i; h++){
+            if(k[i] > k[h]){
+                if(_matriz[h][0] == max_rela){
                     varia++;
                 }
-            }
-            _matriz[i][1] = max_rela + 1;
-            _matriz[i][2] = varia;
-        }
-        max_absol = 0;
-        varia = 1;
-        for(int i = 0; i <size; i++){
-            if(_matriz[i][1] >= max_absol){
-                max_absol = _matriz[i][1];
-                if(_matriz[i][2] > varia){
-                    varia = _matriz[i][2];
+                if(_matriz[h][0] > max_rela){
+                    max_rela = _matriz[h][0];
+                    varia = _matriz[h][1];
                 }
             }
         }
-        _results[0] = max_absol;
-        _results[1] = varia;
+        _matriz[i][0] = max_rela + 1;
+        _matriz[i][1] = varia;
     }
+    max_absol = 0;
+    varia = 0;
+    for(int i = 0; i <size; i++){
+        if(_matriz[i][0] >= max_absol){
+            max_absol = _matriz[i][0];
+        }
+    }
+    for(int i = 0; i< size; i++){
+        if(_matriz[i][0] == max_absol){
+            varia += _matriz[i][1];
+        }
+    }
+    _results[0] = max_absol;
+    _results[1] = varia;
     return _results;
 }
+
 /**
  * @brief 
  * 
  * @param v 
  */
 void alg_2(vector <int> v1, vector<int> v2){
-    long s1 = v1.size();
-    long s2 = v2.size();
-    vector<vector<int>> t (s1, vector<int>(s2));
-    if(v1[0] == v2[0]){
-        t[0][0] = 1;
-    }
-    else{
-        t[0][0] = 0;
-    }
-    for(long i = 1; i <s1/10; i++){
-            t[i][0] = 1;
-    }
-    for(long  j = 1; j< s2; j++){
-        if(v1[0] == v2[j]){
-                t[0][j] = 1;
-            }
-
-    }
-
-    for (long  i = 1; i<s1 ; i ++){
-        for (long   j = 1; j<s2 ; j ++){
-            if (v1[i] == v2[j] && i != 0 && j != 0){
-                t[i][j] = t[i-1][j-1] + 1;
-            }
-            else{
-                    t[i][j] = max(t[i-1][j], t[i][j-1]);
-                }
+    long s1 = v1.size(), s2 = v2.size();
+    int max_rela, max_absol, index;
+    vector<int> _comuns1, _comuns2;
+    bool exist;
+    for(long i = 0; i < s1; i++){
+        exist = false;
+        for(long h = 0; h < s2; h++){
+            if(v1[i] == v2[h]){
+                exist = true;
+            } 
+        }
+        if(exist){
+            _comuns1.push_back(v1[i]);
         }
     }
-
-    printf("%d\n",t[s1-1][s2-1]);
+    for(long h = 0; h < s2; h++){
+        exist = false;
+        for(long i = 0; i < s1; i++){
+            if(v1[i] == v2[h]){
+                exist = true;
+            } 
+        }
+        if(exist){
+            _comuns2.push_back(v2[h]);
+        }
+    }
+    s1 = _comuns1.size();
+    s2 = _comuns2.size();
+    vector<vector<int>> _matriz (s1,vector<int> (2, 0));
+    for(long i = 0; i< s1; i++){
+        if(i == 0){
+            _matriz[i][0] = 1;
+            for(long h = 0; h< s2; h++){
+                if(_comuns2[h] == _comuns1[i]){
+                    _matriz[i][1] = h;
+                    break;
+                }
+            }
+        }
+        else{
+            max_rela = 0;
+            index = 0;
+            for(long h = 0; h < i; h++){
+                if(_comuns1[i] > _comuns1[h]){
+                    if(_matriz[h][0] > max_rela){
+                        for(long k = 0; k < s2; k++){
+                            if( k > _matriz[h][1] && _comuns2[k] == _comuns1[i]){
+                                max_rela = _matriz[h][0];
+                                index = k;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if( index == 0){
+                    for(long k = 0; k < s2; k++){
+                        if( _comuns2[k] == _comuns1[i]){
+                            index = k;
+                            break;
+                        }
+                    }
+                }
+                _matriz[i][0] = max_rela + 1;
+                _matriz[i][1] = index;
+            }
+        }
+    }
+    max_absol = 0;
+    for(long i = 0; i < s1; i++){
+        if(_matriz[i][0] > max_absol){
+            max_absol = _matriz[i][0];
+        }
+    }
+    printf("%d\n", max_absol);
 
 }
 
