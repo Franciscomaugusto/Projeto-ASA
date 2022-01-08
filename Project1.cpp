@@ -14,15 +14,14 @@
 
 using namespace std;
 
+
 /**
- * @brief 
- * 
- * @param s 
- * @param v 
- * @param ind 
- * @return vector<vector<int>> 
+ * Find_vector, função responsável por encontrar
+ * os alagrismos na string introduzida pelo utilizador
+ * @param string s
+ * @return vector<int>> 
  */
-vector<int> find_vector(string s,vector<vector<int>> v){
+vector<int> find_vector(string s){
     string number = "";
     int num;
     vector<int> h;
@@ -42,10 +41,10 @@ vector<int> find_vector(string s,vector<vector<int>> v){
 
 
 /**
- * @brief 
- * 
- * @param v 
- * @return int 
+ * Função alg_1, procura encontrar o tamanho da maior sequencia crescente
+ * de inteiros da sequencia, bem como o numero de sequencias desse mesmo tamanho
+ * @param vector<vector<int>> v
+ * @return vector<int> 
  */
 vector<int> alg_1(vector<vector<int>> v){
     int max_rela = 0, max_absol, varia;
@@ -54,7 +53,7 @@ vector<int> alg_1(vector<vector<int>> v){
     int size = k.size();
     vector<vector<int>> _matriz (size, vector<int>(2, 0));
     for(int i= 0; i< size; i++){
-            _matriz[i][0] = v[0][i];
+        _matriz[i][0] = v[0][i];
     }
     for(int i= 0; i< size; i++){
         max_rela = 0;
@@ -62,7 +61,7 @@ vector<int> alg_1(vector<vector<int>> v){
         for(int h = 0; h < i; h++){
             if(k[i] > k[h]){
                 if(_matriz[h][0] == max_rela){
-                    varia++;
+                    varia+= _matriz[h][1];
                 }
                 if(_matriz[h][0] > max_rela){
                     max_rela = _matriz[h][0];
@@ -90,10 +89,11 @@ vector<int> alg_1(vector<vector<int>> v){
     return _results;
 }
 
+
 /**
- * @brief 
- * 
- * @param v 
+ * Função alg_2, procura encontrar a maior sequencia crescente
+ * de inteiros comum a duas sequencias de algarismos
+ * @param vector<int> v2 
  */
 void alg_2(vector <int> v1, vector<int> v2){
     long s1 = v1.size(), s2 = v2.size();
@@ -174,10 +174,8 @@ void alg_2(vector <int> v1, vector<int> v2){
 }
 
 
-
 /**
- * @brief 
- * 
+ * Main do programa
  * @return int 
  */
 int main(){ 
@@ -189,16 +187,16 @@ int main(){
     _sequences.push_back(vector<int>(0));
     if(num == 1){
         getline(cin, line);
-        _sequences[0] = find_vector(line,_sequences);
+        _sequences[0] = find_vector(line);
         vector<int> _results = alg_1(_sequences);
         printf("%d %d\n", _results[0], _results[1]);
     }
     if(num == 2){
         getline(cin, line);
-        _sequences[0] = find_vector(line, _sequences);
+        _sequences[0] = find_vector(line);
         getline(cin, line);
         _sequences.push_back(vector<int>(0));
-        _sequences[1] = find_vector(line, _sequences);
+        _sequences[1] = find_vector(line);
         alg_2(_sequences[0], _sequences[1]);
     }
     return 0;
